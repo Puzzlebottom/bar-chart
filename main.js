@@ -23,9 +23,8 @@ const drawBarChart = (data, options, element) => {
     chart.append("<div id='" + id + "'></div>");
   }
 
-  let titleElement = $("#title");
+  let titleElement = $("#title").text(title);
   titleElement
-    .text(title)
     .css("font-size", titleSize + "px")
     .css("color", titleColor)
     .css("left", width / 2 - titleElement.width() / 2 + "px");
@@ -42,13 +41,13 @@ const drawBarChart = (data, options, element) => {
     .css("left", AXIS_OFFSET + "px");
 
   let yLabelElement = $("#y-label").text(yLabel);
-  yLabelElement.css(
-    "top",
-    (height - AXIS_OFFSET) / 2 + yLabelElement.width() / 2 + "px"
-  );
+  yLabelElement
+    .css("font-size", Math.floor(titleSize * 0.4))
+    .css("top", (height - AXIS_OFFSET) / 2 + yLabelElement.width() / 2 + "px");
 
   let xLabelElement = $("#x-label").text(xLabel);
   xLabelElement
+    .css("font-size", Math.floor(titleSize * 0.4))
     .css("top", height - xLabelElement.height() - 5 + "px")
     .css(
       "left",
@@ -64,10 +63,10 @@ const drawBarChart = (data, options, element) => {
 $(() => {
   let data = [1, 2, 3, 4, 5];
   let options = {
-    width: 800,
-    height: 500,
+    width: 200,
+    height: 125,
     title: "Vegetables Bought",
-    titleSize: 25,
+    titleSize: 10,
     titleColor: "blue",
     barValuePosition: "top", // top, middle, bottom
     barColor: "red",
