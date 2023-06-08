@@ -22,6 +22,7 @@ const drawBarChart = (data, options, element) => {
 
   let barWidth = (width - AXIS_OFFSET) / data.length - barSpacing;
   let maxHeight = height - AXIS_OFFSET * 2;
+
   const getMaxDataValue = () => {
     let max = 0;
     for (let datum of data) {
@@ -33,8 +34,34 @@ const drawBarChart = (data, options, element) => {
   };
   let maxValue = getMaxDataValue();
 
+  const getScaleDivisor = () => {
+    let divisors = [6, 5, 4];
+    for (let divisor of divisors) {
+      if (maxValue % divisor === 0) {
+        return divisor;
+      }
+    }
+    let overShoot = [];
+    for (let divisor of divisors) {
+      overShoot.push(divisor - (maxValue % divisor));
+    }
+    return divisors[overShoot.indexOf(Math.min(...overShoot))];
+  };
+
+  let scaleDivisor = getScaleDivisor();
+
+  const getMaxScale = () => {
+    let x = maxValue;
+    while (x % scaleDivisor !== 0) {
+      x++;
+    }
+    return x;
+  };
+
+  let maxScale = getMaxScale();
+
   for (let i = 0; i < data.length; i++) {
-    let barHeight = (data[i] / maxValue) * maxHeight;
+    let barHeight = (data[i] / maxScale) * maxHeight;
     chart.append("<div class='bar' id='bar" + i + "'></div>");
     $("#bar" + i)
       .css("height", barHeight)
@@ -89,15 +116,15 @@ const drawBarChart = (data, options, element) => {
 };
 
 $(() => {
-  let data = [1, 2, 3, 4, 5];
+  let data = [6, 9, 5, 3, 4];
   let options = {
     width: 800,
     height: 500,
     title: "Vegetables Bought",
     titleSize: 25,
-    titleColor: "blue",
+    titleColor: "black",
     barValuePosition: "top", // top, middle, bottom
-    barColor: "blue",
+    barColor: "teal",
     barLabelColor: "white",
     barSpacing: 30,
     categories: ["one", "two", "three", "four", "five"],
