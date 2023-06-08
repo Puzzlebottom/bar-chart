@@ -121,10 +121,11 @@ const drawBarChart = (data, options, element) => {
   let maxHeight = yLength - axisMargin;
   let maxDataValue = Math.max(...data);
   let scaleDivisor = getScaleDivisor();
-  let maxScale =
-    maxDataValue % scaleDivisor === 0
-      ? maxDataValue
-      : maxDataValue + scaleDivisor - (maxDataValue % scaleDivisor);
+  let maxScale = options.maxScale
+    ? options.maxScale
+    : maxDataValue % scaleDivisor === 0
+    ? maxDataValue
+    : maxDataValue + scaleDivisor - (maxDataValue % scaleDivisor);
 
   let chart = element.css({
     height: options.height,
@@ -162,6 +163,7 @@ $(() => {
     barLabels: ["Potatoes", "Onions", "Tomatoes", "Capsicum", "Beans"],
     xLabel: "Types of Vegetables",
     yLabel: "Weight of Vegetables (in kg)",
+    maxScale: null,
   };
   let element = $("#bar-chart");
   drawBarChart(data, options, element);
