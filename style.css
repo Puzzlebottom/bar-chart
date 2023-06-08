@@ -81,3 +81,7 @@ table {
   position: absolute;
   width: fit-content;
 }
+
+.bar {
+  position: absolute;
+}

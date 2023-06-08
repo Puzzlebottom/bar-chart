@@ -19,6 +19,34 @@ const drawBarChart = (data, options, element) => {
   chart.css("height", height + "px").css("width", width + "px");
 
   let elementIds = ["x-axis", "y-axis", "title", "scale", "x-label", "y-label"];
+
+  let barWidth = (width - AXIS_OFFSET) / data.length - barSpacing;
+  let maxHeight = height - AXIS_OFFSET * 2;
+  const getMaxDataValue = () => {
+    let max = 0;
+    for (let datum of data) {
+      if (datum > max) {
+        max = datum;
+      }
+    }
+    return max;
+  };
+  let maxValue = getMaxDataValue();
+
+  for (let i = 0; i < data.length; i++) {
+    let barHeight = (data[i] / maxValue) * maxHeight;
+    chart.append("<div class='bar' id='bar" + i + "'></div>");
+    $("#bar" + i)
+      .css("height", barHeight)
+      .css("width", barWidth + "px")
+      .css(
+        "left",
+        AXIS_OFFSET + barSpacing / 2 + (barWidth + barSpacing) * i + "px"
+      )
+      .css("top", height - AXIS_OFFSET - barHeight + "px")
+      .css("background-color", barColor);
+  }
+
   for (let id of elementIds) {
     chart.append("<div id='" + id + "'></div>");
   }
@@ -42,12 +70,12 @@ const drawBarChart = (data, options, element) => {
 
   let yLabelElement = $("#y-label").text(yLabel);
   yLabelElement
-    .css("font-size", Math.floor(titleSize * 0.4))
+    .css("font-size", Math.floor(titleSize * 0.6))
     .css("top", (height - AXIS_OFFSET) / 2 + yLabelElement.width() / 2 + "px");
 
   let xLabelElement = $("#x-label").text(xLabel);
   xLabelElement
-    .css("font-size", Math.floor(titleSize * 0.4))
+    .css("font-size", Math.floor(titleSize * 0.6))
     .css("top", height - xLabelElement.height() - 5 + "px")
     .css(
       "left",
@@ -63,15 +91,15 @@ const drawBarChart = (data, options, element) => {
 $(() => {
   let data = [1, 2, 3, 4, 5];
   let options = {
-    width: 200,
-    height: 125,
+    width: 800,
+    height: 500,
     title: "Vegetables Bought",
-    titleSize: 10,
+    titleSize: 25,
     titleColor: "blue",
     barValuePosition: "top", // top, middle, bottom
-    barColor: "red",
-    barLabelColor: "black",
-    barSpacing: 10,
+    barColor: "blue",
+    barLabelColor: "white",
+    barSpacing: 30,
     categories: ["one", "two", "three", "four", "five"],
     xLabel: "Types of Vegetables",
     yLabel: "Weight of Vegetables (in kg)",
