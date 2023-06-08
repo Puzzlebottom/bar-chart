@@ -77,7 +77,7 @@ table {
   background-color: black;
 }
 
-#x-label {
+#x-label, .bar-data, .bar-label, .scale-mark  {
   position: absolute;
   width: fit-content;
 }
@@ -86,22 +86,9 @@ table {
   position: absolute;
 }
 
-.bar-data {
-  position: absolute;
-  width: fit-content
-}
-
-.bar-label {
-  position: absolute;
-  width: fit-content
-}
-
-.scale-mark {
-  position: absolute;
-}
-
 .scale-line {
   position: absolute;
   height: 1px;
+  left: 1px;
   background-color: lightgray;
 }

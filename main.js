@@ -2,7 +2,6 @@ const drawBarChart = (data, options, element) => {
   let {
     width,
     height,
-    title,
     titleSize,
     titleColor,
     barDataPosition,
@@ -44,7 +43,9 @@ const drawBarChart = (data, options, element) => {
 
     bar = $("#bar" + dataIndex);
 
-    barData = bar.find(".bar-data");
+    barData = bar
+      .find(".bar-data")
+      .css({ "font-size": Math.floor(titleSize * 0.6) });
     let dataPosition =
       barDataPosition === "top"
         ? Math.min(-barData.height(), barHeight - barData.height())
@@ -55,15 +56,15 @@ const drawBarChart = (data, options, element) => {
           )
         : barHeight - barData.height();
     barData.css({
-      "font-size": Math.floor(titleSize * 0.6),
       color: barLabelColor,
       top: dataPosition,
       left: barWidth / 2 - barData.width() / 2,
     });
 
-    barLabel = bar.find(".bar-label");
+    barLabel = bar
+      .find(".bar-label")
+      .css({ "font-size": Math.floor(titleSize * 0.6) });
     barLabel.css({
-      "font-size": Math.floor(titleSize * 0.6),
       top: barHeight,
       left: barWidth / 2 - barLabel.width() / 2,
     });
@@ -76,9 +77,11 @@ const drawBarChart = (data, options, element) => {
     $(xAxis)
       .appendTo(chart)
       .css({ width: xLength, top: yLength, left: axisMargin });
-    xLabel = $(xLabel).appendTo(chart).text(options.xLabel);
+    xLabel = $(xLabel)
+      .appendTo(chart)
+      .text(options.xLabel)
+      .css({ "font-size": Math.floor(titleSize * 0.8) });
     xLabel.css({
-      "font-size": Math.floor(titleSize * 0.8),
       top: height - xLabel.height() - 5,
       left: axisMargin + xLength / 2 - xLabel.width() / 2,
     });
@@ -89,9 +92,11 @@ const drawBarChart = (data, options, element) => {
     let yLabel = "<div id='y-label'></div>";
 
     yAxis = $(yAxis).appendTo(chart).css({ height: yLength, left: axisMargin });
-    yLabel = $(yLabel).appendTo(chart).text(options.yLabel);
+    yLabel = $(yLabel)
+      .appendTo(chart)
+      .text(options.yLabel)
+      .css({ "font-size": Math.floor(titleSize * 0.8) });
     yLabel.css({
-      "font-size": Math.floor(titleSize * 0.8),
       top: yLength / 2 + yLabel.width() / 2,
     });
 
@@ -99,13 +104,17 @@ const drawBarChart = (data, options, element) => {
       let mark = "<div class='scale-mark'>" + i + "</div>";
       let line = "<div class='scale-line'></div>";
       let topOffset = axisMargin + (maxHeight * (maxScale - i)) / maxScale;
-      mark = $(mark).appendTo(yAxis);
+      mark = $(mark)
+        .appendTo(yAxis)
+        .css({ "font-size": Math.floor(titleSize * 0.6) });
       mark.css({
         top: topOffset - mark.height() / 2,
         left: -(mark.width() + 2),
       });
       if (i !== 0) {
-        $(line).appendTo(yAxis).css({ width: xLength, top: topOffset });
+        $(line)
+          .appendTo(yAxis)
+          .css({ width: xLength, top: topOffset, left: 1 });
       }
     }
   };
@@ -123,36 +132,34 @@ const drawBarChart = (data, options, element) => {
       : maxDataValue + scaleDivisor - (maxDataValue % scaleDivisor);
 
   let chart = element.css({ height: height, width: width });
-  let elementIds = ["title", "scale"];
-  for (let id of elementIds) {
-    chart.append("<div id='" + id + "'></div>");
-  }
+  let title = $("<div id='title'></div>")
+    .appendTo(chart)
+    .text(options.title)
+    .css({ "font-size": titleSize });
+  title.css({
+    color: titleColor,
+    left: width / 2 - title.width() / 2,
+  });
 
   renderXAxis();
   renderYAxis();
   for (let i = 0; i < data.length; i++) {
     renderBar(i);
   }
-
-  let titleElement = $("#title").text(title);
-  titleElement
-    .css("font-size", titleSize + "px")
-    .css("color", titleColor)
-    .css("left", width / 2 - titleElement.width() / 2 + "px");
 };
 
 $(() => {
   let data = [6, 8, 5, 3, 4];
   let options = {
-    width: 800,
-    height: 500,
+    width: 150,
+    height: 150,
     title: "Vegetables Bought",
-    titleSize: 25,
+    titleSize: 10,
     titleColor: "black",
     barDataPosition: "top", // top, middle, bottom
     barColor: "teal",
     barLabelColor: "black",
-    barSpacing: 30,
+    barSpacing: 8,
     barLabels: ["Potatoes", "Onions", "Tomatoes", "Capsicum", "Beans"],
     xLabel: "Types of Vegetables",
     yLabel: "Weight of Vegetables (in kg)",
