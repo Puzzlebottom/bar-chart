@@ -54,7 +54,6 @@ table {
 #title {
   position: absolute;
   width: fit-content;
-  top: 5px;
 }
 
 #y-axis {
@@ -68,7 +67,6 @@ table {
   transform-origin: top left;
   transform: rotate(-90deg);
   width: fit-content;
-  left: 5px
 }
 
 #x-axis {

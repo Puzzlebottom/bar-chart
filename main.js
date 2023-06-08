@@ -82,7 +82,7 @@ const drawBarChart = (data, options, element) => {
       .text(options.xLabel)
       .css({ "font-size": Math.floor(titleSize * 0.8) });
     xLabel.css({
-      top: height - xLabel.height() - 5,
+      top: yLength + xLabel.height(),
       left: axisMargin + xLength / 2 - xLabel.width() / 2,
     });
   };
@@ -98,6 +98,7 @@ const drawBarChart = (data, options, element) => {
       .css({ "font-size": Math.floor(titleSize * 0.8) });
     yLabel.css({
       top: yLength / 2 + yLabel.width() / 2,
+      left: axisMargin - yLabel.height() * 2,
     });
 
     for (let i = maxScale; i >= 0; i -= maxScale / scaleDivisor) {
@@ -109,7 +110,7 @@ const drawBarChart = (data, options, element) => {
         .css({ "font-size": Math.floor(titleSize * 0.6) });
       mark.css({
         top: topOffset - mark.height() / 2,
-        left: -(mark.width() + 2),
+        left: -(mark.width() + titleSize * 0.1),
       });
       if (i !== 0) {
         $(line)
@@ -131,13 +132,17 @@ const drawBarChart = (data, options, element) => {
       ? maxDataValue
       : maxDataValue + scaleDivisor - (maxDataValue % scaleDivisor);
 
-  let chart = element.css({ height: height, width: width });
+  let chart = element.css({
+    height: height,
+    width: width,
+  });
   let title = $("<div id='title'></div>")
     .appendTo(chart)
     .text(options.title)
     .css({ "font-size": titleSize });
   title.css({
     color: titleColor,
+    top: Math.min(titleSize * 0.2),
     left: width / 2 - title.width() / 2,
   });
 
@@ -151,15 +156,15 @@ const drawBarChart = (data, options, element) => {
 $(() => {
   let data = [6, 8, 5, 3, 4];
   let options = {
-    width: 150,
-    height: 150,
+    width: 80,
+    height: 50,
     title: "Vegetables Bought",
-    titleSize: 10,
+    titleSize: 5,
     titleColor: "black",
     barDataPosition: "top", // top, middle, bottom
     barColor: "teal",
     barLabelColor: "black",
-    barSpacing: 8,
+    barSpacing: 3,
     barLabels: ["Potatoes", "Onions", "Tomatoes", "Capsicum", "Beans"],
     xLabel: "Types of Vegetables",
     yLabel: "Weight of Vegetables (in kg)",
