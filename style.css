@@ -85,3 +85,13 @@ table {
 .bar {
   position: absolute;
 }
+
+.bar-data {
+  position: absolute;
+  width: fit-content
+}
+
+.bar-label {
+  position: absolute;
+  width: fit-content
+}

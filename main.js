@@ -13,69 +13,84 @@ const drawBarChart = (data, options, element) => {
     xLabel,
     yLabel,
   } = options;
-  let AXIS_OFFSET = width * 0.07;
-
-  let chart = element;
-  chart.css("height", height + "px").css("width", width + "px");
-
-  let elementIds = ["x-axis", "y-axis", "title", "scale", "x-label", "y-label"];
-
-  let barWidth = (width - AXIS_OFFSET) / data.length - barSpacing;
-  let maxHeight = height - AXIS_OFFSET * 2;
-
-  const getMaxDataValue = () => {
-    let max = 0;
-    for (let datum of data) {
-      if (datum > max) {
-        max = datum;
-      }
-    }
-    return max;
-  };
-  let maxValue = getMaxDataValue();
 
   const getScaleDivisor = () => {
     let divisors = [6, 5, 4];
+    let yAxisOverhead = [];
     for (let divisor of divisors) {
-      if (maxValue % divisor === 0) {
+      if (maxDataValue % divisor === 0) {
         return divisor;
+      } else {
+        yAxisOverhead.push(divisor - (maxDataValue % divisor));
       }
     }
-    let overShoot = [];
-    for (let divisor of divisors) {
-      overShoot.push(divisor - (maxValue % divisor));
-    }
-    return divisors[overShoot.indexOf(Math.min(...overShoot))];
+    return divisors[yAxisOverhead.indexOf(Math.min(...yAxisOverhead))];
   };
 
+  const renderBar = (dataIndex) => {
+    let barHeight = (data[dataIndex] / maxScale) * maxHeight;
+    let bar = "<div class='bar' id='bar" + dataIndex + "'></div>";
+    let barData = "<div class='bar-data'>" + data[dataIndex] + "</div>";
+    let barLabel = "<div class='bar-label'>" + categories[dataIndex] + "</div>";
+    let barCSS = {
+      height: barHeight,
+      width: barWidth,
+      left: axisMargin + barSpacing / 2 + (barWidth + barSpacing) * dataIndex,
+      top: yLength - barHeight,
+      background: barColor,
+    };
+
+    $(bar).append(barData, barLabel).appendTo(chart).css(barCSS);
+
+    bar = $("#bar" + dataIndex);
+
+    barData = bar.find(".bar-data");
+    let dataPosition =
+      barValuePosition === "top"
+        ? Math.min(-barData.height(), barHeight - barData.height())
+        : barValuePosition === "middle"
+        ? Math.min(
+            barHeight / 2 - barData.height() / 2,
+            barHeight - barData.height()
+          )
+        : barHeight - barData.height();
+    let barDataCSS = {
+      "font-size": Math.floor(titleSize * 0.6),
+      color: barLabelColor,
+      top: dataPosition,
+      left: barWidth / 2 - barData.width() / 2,
+    };
+    barData.css(barDataCSS);
+
+    barLabel = bar.find(".bar-label");
+    let barLabelCSS = {
+      "font-size": Math.floor(titleSize * 0.6),
+      top: barHeight,
+      left: barWidth / 2 - barLabel.width() / 2,
+    };
+    barLabel.css(barLabelCSS);
+  };
+
+  let axisMargin = titleSize * 2;
+  let xLength = width - axisMargin;
+  let yLength = height - axisMargin;
+  let barWidth = xLength / data.length - barSpacing;
+  let maxHeight = yLength - axisMargin;
+  let maxDataValue = Math.max(...data);
   let scaleDivisor = getScaleDivisor();
+  let maxScale =
+    maxDataValue % scaleDivisor === 0
+      ? maxDataValue
+      : maxDataValue + scaleDivisor - (maxDataValue % scaleDivisor);
 
-  const getMaxScale = () => {
-    let x = maxValue;
-    while (x % scaleDivisor !== 0) {
-      x++;
-    }
-    return x;
-  };
-
-  let maxScale = getMaxScale();
-
-  for (let i = 0; i < data.length; i++) {
-    let barHeight = (data[i] / maxScale) * maxHeight;
-    chart.append("<div class='bar' id='bar" + i + "'></div>");
-    $("#bar" + i)
-      .css("height", barHeight)
-      .css("width", barWidth + "px")
-      .css(
-        "left",
-        AXIS_OFFSET + barSpacing / 2 + (barWidth + barSpacing) * i + "px"
-      )
-      .css("top", height - AXIS_OFFSET - barHeight + "px")
-      .css("background-color", barColor);
-  }
-
+  let chart = element.css("height", height + "px").css("width", width + "px");
+  let elementIds = ["x-axis", "y-axis", "title", "scale", "x-label", "y-label"];
   for (let id of elementIds) {
     chart.append("<div id='" + id + "'></div>");
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    renderBar(i);
   }
 
   let titleElement = $("#title").text(title);
@@ -86,28 +101,23 @@ const drawBarChart = (data, options, element) => {
 
   let xAxis = $("#x-axis");
   xAxis
-    .css("width", width - AXIS_OFFSET + "px")
-    .css("top", height - AXIS_OFFSET + "px")
-    .css("left", AXIS_OFFSET + "px");
+    .css("width", xLength + "px")
+    .css("top", yLength + "px")
+    .css("left", axisMargin + "px");
 
   let yAxis = $("#y-axis");
-  yAxis
-    .css("height", height - AXIS_OFFSET + "px")
-    .css("left", AXIS_OFFSET + "px");
+  yAxis.css("height", yLength + "px").css("left", axisMargin + "px");
 
   let yLabelElement = $("#y-label").text(yLabel);
   yLabelElement
-    .css("font-size", Math.floor(titleSize * 0.6))
-    .css("top", (height - AXIS_OFFSET) / 2 + yLabelElement.width() / 2 + "px");
+    .css("font-size", Math.floor(titleSize * 0.8))
+    .css("top", yLength / 2 + yLabelElement.width() / 2 + "px");
 
   let xLabelElement = $("#x-label").text(xLabel);
   xLabelElement
-    .css("font-size", Math.floor(titleSize * 0.6))
+    .css("font-size", Math.floor(titleSize * 0.8))
     .css("top", height - xLabelElement.height() - 5 + "px")
-    .css(
-      "left",
-      AXIS_OFFSET + (width - AXIS_OFFSET) / 2 - xLabelElement.width() / 2 + "px"
-    );
+    .css("left", axisMargin + xLength / 2 - xLabelElement.width() / 2 + "px");
 
   let scale = $("#scale");
 
@@ -116,7 +126,7 @@ const drawBarChart = (data, options, element) => {
 };
 
 $(() => {
-  let data = [6, 9, 5, 3, 4];
+  let data = [6, 8, 5, 3, 4];
   let options = {
     width: 800,
     height: 500,
@@ -125,9 +135,9 @@ $(() => {
     titleColor: "black",
     barValuePosition: "top", // top, middle, bottom
     barColor: "teal",
-    barLabelColor: "white",
+    barLabelColor: "black",
     barSpacing: 30,
-    categories: ["one", "two", "three", "four", "five"],
+    categories: ["Potatoes", "Onions", "Tomatoes", "Capsicum", "Beans"],
     xLabel: "Types of Vegetables",
     yLabel: "Weight of Vegetables (in kg)",
   };
