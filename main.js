@@ -5,61 +5,108 @@ const drawBarChart = (data, options, element) => {
     let divisors = [6, 5, 4];
     let yAxisOverhead = [];
     for (let divisor of divisors) {
-      if (maxDataValue % divisor === 0) {
+      if (maxBarDataSum % divisor === 0) {
         return divisor;
       } else {
-        yAxisOverhead.push(divisor - (maxDataValue % divisor));
+        yAxisOverhead.push(divisor - (maxBarDataSum % divisor));
       }
     }
     return divisors[yAxisOverhead.indexOf(Math.min(...yAxisOverhead))];
   };
 
+  const getMaxBarDataSum = () => {
+    let max = 0;
+    for (let i = 0; i < data.length; i++) {
+      let dataSum = data[i]["value"].reduce((a, b) => a + b);
+      if (dataSum > max) {
+        max = dataSum;
+      }
+    }
+    return max;
+  };
+
   const renderBar = (dataIndex) => {
-    let barHeight = (data[dataIndex] / maxScale) * maxHeight;
+    let barHeight =
+      (data[dataIndex]["value"].reduce((a, b) => a + b, 0) / maxScale) *
+      maxHeight;
+    let totalSubBars = data[dataIndex]["value"].length;
     let bar = "<div class='bar' id='bar" + dataIndex + "'></div>";
-    let barData = "<div class='bar-data'>" + data[dataIndex] + "</div>";
     let barLabel =
-      "<div class='bar-label'>" + options.barLabels[dataIndex] + "</div>";
+      "<div class='bar-label'>" + data[dataIndex]["barLabel"] + "</div>";
+    let topOffset = yLength;
 
     $(bar)
-      .append(barData, barLabel)
+      .append(barLabel)
       .appendTo(chart)
       .css({
-        height: barHeight,
-        width: barWidth,
         left:
           axisMargin +
           options.barSpacing / 2 +
           (barWidth + options.barSpacing) * dataIndex,
-        top: yLength - barHeight,
-        background: options.barColor,
       });
-
     bar = $("#bar" + dataIndex);
 
-    barData = bar
-      .find(".bar-data")
-      .css({ "font-size": Math.floor(titleSize * 0.6) });
-    let dataPosition =
-      options.barDataPosition === "top"
-        ? Math.min(-barData.height(), barHeight - barData.height())
-        : options.barDataPosition === "middle"
-        ? Math.min(
-            barHeight / 2 - barData.height() / 2,
-            barHeight - barData.height()
-          )
-        : barHeight - barData.height();
-    barData.css({
-      color: options.barLabelColor,
-      top: dataPosition,
-      left: barWidth / 2 - barData.width() / 2,
-    });
+    for (let i = 0; i < totalSubBars; i++) {
+      let value = data[dataIndex]["value"][i];
+      let subBarHeight = (value / maxScale) * maxHeight;
+      let subBarColor = data[dataIndex]["barColor"][i];
+      topOffset -= subBarHeight;
+
+      let subBar =
+        "<div class='sub-bar' id='bar" + dataIndex + "-sub" + i + "'></div>";
+
+      subBar = $(subBar).appendTo(bar).css({
+        height: subBarHeight,
+        width: barWidth,
+        top: topOffset,
+        background: subBarColor,
+      });
+
+      if (options.barDataPosition) {
+        let subBarData =
+          "<div class='bar-data'>" + data[dataIndex]["value"][i] + "</div>";
+        subBarData = $(subBarData)
+          .appendTo(subBar)
+          .css({ "font-size": Math.floor(titleSize * 0.6) });
+        let dataPosition =
+          options.barDataPosition === "top"
+            ? 0
+            : options.barDataPosition === "middle"
+            ? subBarHeight / 2 - subBarData.height() / 2
+            : subBarHeight - subBarData.height();
+        subBarData.css({
+          color: options.barLabelColor,
+          top: dataPosition,
+          left: barWidth / 2 - subBarData.width() / 2,
+        });
+      }
+    }
+
+    $(bar).append(barLabel).appendTo(chart);
+
+    // barData = bar
+    //   .find(".bar-data")
+    //   .css({ "font-size": Math.floor(titleSize * 0.6) });
+    // let dataPosition =
+    //   options.barDataPosition === "top"
+    //     ? Math.min(-barData.height(), barHeight - barData.height())
+    //     : options.barDataPosition === "middle"
+    //     ? Math.min(
+    //         barHeight / 2 - barData.height() / 2,
+    //         barHeight - barData.height()
+    //       )
+    //     : barHeight - barData.height();
+    // barData.css({
+    //   color: options.barLabelColor,
+    //   top: dataPosition,
+    //   left: barWidth / 2 - barData.width() / 2,
+    // });
 
     barLabel = bar
       .find(".bar-label")
       .css({ "font-size": Math.floor(titleSize * 0.6) });
     barLabel.css({
-      top: barHeight,
+      top: yLength,
       left: barWidth / 2 - barLabel.width() / 2,
     });
   };
@@ -119,13 +166,13 @@ const drawBarChart = (data, options, element) => {
   let yLength = options.height - axisMargin;
   let barWidth = xLength / data.length - options.barSpacing;
   let maxHeight = yLength - axisMargin;
-  let maxDataValue = Math.max(...data);
+  let maxBarDataSum = getMaxBarDataSum();
   let scaleDivisor = getScaleDivisor();
   let maxScale = options.maxScale
     ? options.maxScale
-    : maxDataValue % scaleDivisor === 0
-    ? maxDataValue
-    : maxDataValue + scaleDivisor - (maxDataValue % scaleDivisor);
+    : maxBarDataSum % scaleDivisor === 0
+    ? maxBarDataSum
+    : maxBarDataSum + scaleDivisor - (maxBarDataSum % scaleDivisor);
 
   let chart = element.css({
     height: options.height,
@@ -149,18 +196,42 @@ const drawBarChart = (data, options, element) => {
 };
 
 $(() => {
-  let data = [6, 8, 5, 3, 4];
+  let data = [
+    {
+      value: [6, 9, 10, 3],
+      barColor: ["#00f", "#44f", "#88f", "#ccf"],
+      barLabel: "Potatoes",
+    },
+    {
+      value: [8, 2, 5, 6],
+      barColor: ["#00f", "#44f", "#88f", "#ccf"],
+      barLabel: "Onions",
+    },
+    {
+      value: [5, 5, 4, 3],
+      barColor: ["#00f", "#44f", "#88f", "#ccf"],
+      barLabel: "Tomatoes",
+    },
+    {
+      value: [3, 11, 2, 4],
+      barColor: ["#00f", "#44f", "#88f", "#ccf"],
+      barLabel: "Capsicum",
+    },
+    {
+      value: [4, 9, 4, 4],
+      barColor: ["#00f", "#44f", "#88f", "#ccf"],
+      barLabel: "Beans",
+    },
+  ];
   let options = {
-    width: 800,
-    height: 500,
+    width: 450,
+    height: 450,
     title: "Vegetables Bought",
     titleSize: 30,
     titleColor: "black",
-    barDataPosition: "top", // top, middle, bottom
-    barColor: "teal",
+    barDataPosition: "middle", // top, middle, bottom
     barLabelColor: "black",
-    barSpacing: 15,
-    barLabels: ["Potatoes", "Onions", "Tomatoes", "Capsicum", "Beans"],
+    barSpacing: 10,
     xLabel: "Types of Vegetables",
     yLabel: "Weight of Vegetables (in kg)",
     maxScale: null,

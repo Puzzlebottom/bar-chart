@@ -51,15 +51,15 @@ table {
   position: relative;
 }
 
-#title {
+#x-axis, #y-axis {
   position: absolute;
-  width: fit-content;
+  height: 1px;
+  background-color: black;
 }
 
-#y-axis {
+#title, #x-label, .bar-data, .bar-label, .scale-mark  {
   position: absolute;
-  width: 1px;
-  background-color: black;
+  width: fit-content;
 }
 
 #y-label {
@@ -69,18 +69,7 @@ table {
   width: fit-content;
 }
 
-#x-axis {
-  position: absolute;
-  height: 1px;
-  background-color: black;
-}
-
-#x-label, .bar-data, .bar-label, .scale-mark  {
-  position: absolute;
-  width: fit-content;
-}
-
-.bar {
+.bar, .sub-bar {
   position: absolute;
 }
 
