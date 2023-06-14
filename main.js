@@ -1,6 +1,4 @@
 const drawBarChart = (data, options, element) => {
-  let titleSize = options.titleSize;
-
   const getScaleDivisor = () => {
     let divisors = [6, 5, 4];
     let yAxisOverhead = [];
@@ -26,13 +24,13 @@ const drawBarChart = (data, options, element) => {
   };
 
   const renderBar = (dataIndex) => {
-    let totalSubBars = data[dataIndex]["value"].length;
-    let bar = "<div class='bar' id='bar" + dataIndex + "'></div>";
+    let subBarValueTotal = data[dataIndex]["value"].length;
+    let bar = "<div class='bar'></div>";
     let barLabel =
       "<div class='bar-label'>" + data[dataIndex]["barLabel"] + "</div>";
     let topOffset = yLength;
 
-    $(bar)
+    bar = $(bar)
       .append(barLabel)
       .appendTo(chart)
       .css({
@@ -41,9 +39,8 @@ const drawBarChart = (data, options, element) => {
           options.barSpacing / 2 +
           (barWidth + options.barSpacing) * dataIndex,
       });
-    bar = $("#bar" + dataIndex);
 
-    for (let i = 0; i < totalSubBars; i++) {
+    for (let i = 0; i < subBarValueTotal; i++) {
       let value = data[dataIndex]["value"][i];
       let subBarHeight = (value / maxScale) * maxHeight;
       let subBarColor = data[dataIndex]["barColor"][i];
@@ -66,7 +63,9 @@ const drawBarChart = (data, options, element) => {
           .appendTo(subBar)
           .css({ "font-size": Math.floor(titleSize * 0.6) });
         let dataPosition =
-          options.barDataPosition === "top"
+          options.barDataPosition === "above"
+            ? -subBarData.height()
+            : options.barDataPosition === "top"
             ? 0
             : options.barDataPosition === "middle"
             ? subBarHeight / 2 - subBarData.height() / 2
@@ -94,7 +93,7 @@ const drawBarChart = (data, options, element) => {
     let xAxis = "<div id='x-axis'></div>";
     let xLabel = "<div id='x-label'></div>";
 
-    $(xAxis)
+    xAxis = $(xAxis)
       .appendTo(chart)
       .css({ width: xLength, top: yLength, left: axisMargin });
     xLabel = $(xLabel)
@@ -111,7 +110,9 @@ const drawBarChart = (data, options, element) => {
     let yAxis = "<div id='y-axis'></div>";
     let yLabel = "<div id='y-label'></div>";
 
-    yAxis = $(yAxis).appendTo(chart).css({ height: yLength, left: axisMargin });
+    yAxis = $(yAxis)
+      .appendTo(chart)
+      .css({ height: yLength - axisMargin, top: axisMargin, left: axisMargin });
     yLabel = $(yLabel)
       .appendTo(chart)
       .text(options.yLabel)
@@ -124,7 +125,7 @@ const drawBarChart = (data, options, element) => {
     for (let i = maxScale; i >= 0; i -= maxScale / scaleDivisor) {
       let mark = "<div class='scale-mark'>" + i + "</div>";
       let line = "<div class='scale-line'></div>";
-      let topOffset = axisMargin + (maxHeight * (maxScale - i)) / maxScale;
+      let topOffset = (maxHeight * (maxScale - i)) / maxScale;
       mark = $(mark)
         .appendTo(yAxis)
         .css({ "font-size": Math.floor(titleSize * 0.6) });
@@ -140,6 +141,7 @@ const drawBarChart = (data, options, element) => {
     }
   };
 
+  let titleSize = options.titleSize;
   let axisMargin = titleSize * 2;
   let xLength = options.width - axisMargin;
   let yLength = options.height - axisMargin;
@@ -154,6 +156,7 @@ const drawBarChart = (data, options, element) => {
     : maxBarDataSum + scaleDivisor - (maxBarDataSum % scaleDivisor);
 
   let chart = element.css({
+    position: "relative",
     height: options.height,
     width: options.width,
   });
@@ -176,6 +179,43 @@ const drawBarChart = (data, options, element) => {
 
 $(() => {
   let data = [
+    {
+      value: [6],
+      barColor: ["teal"],
+      barLabel: "Gorillas",
+    },
+    {
+      value: [2],
+      barColor: ["teal"],
+      barLabel: "Giraffes",
+    },
+    {
+      value: [7],
+      barColor: ["Teal"],
+      barLabel: "Rhinos",
+    },
+    {
+      value: [1],
+      barColor: ["teal"],
+      barLabel: "Lions",
+    },
+  ];
+  let options = {
+    width: 300,
+    height: 200,
+    title: "Zoo Animals",
+    titleSize: 15,
+    titleColor: "black",
+    barDataPosition: "above", // above, top, middle, bottom
+    barLabelColor: "black",
+    barSpacing: 20,
+    xLabel: "Types of Animals",
+    yLabel: "Animal Population",
+    maxScale: null,
+  };
+  let element = $("#bar-chart-1");
+  drawBarChart(data, options, element);
+  let data2 = [
     {
       value: [6, 9, 10, 3],
       barColor: ["#00f", "#44f", "#88f", "#ccf"],
@@ -202,19 +242,19 @@ $(() => {
       barLabel: "Beans",
     },
   ];
-  let options = {
-    width: 450,
-    height: 450,
+  let options2 = {
+    width: 300,
+    height: 300,
     title: "Vegetables Bought",
-    titleSize: 30,
+    titleSize: 20,
     titleColor: "black",
-    barDataPosition: "middle", // top, middle, bottom
+    barDataPosition: "middle", // above, top, middle, bottom
     barLabelColor: "black",
     barSpacing: 10,
     xLabel: "Types of Vegetables",
     yLabel: "Weight of Vegetables (in kg)",
     maxScale: null,
   };
-  let element = $("#bar-chart");
-  drawBarChart(data, options, element);
+  let element2 = $("#bar-chart-2");
+  drawBarChart(data2, options2, element2);
 });

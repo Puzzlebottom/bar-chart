@@ -51,9 +51,15 @@ table {
   position: relative;
 }
 
-#x-axis, #y-axis {
+#x-axis {
   position: absolute;
   height: 1px;
+  background-color: black;
+}
+
+#y-axis {
+  position: absolute;
+  width: 1px;
   background-color: black;
 }
 
