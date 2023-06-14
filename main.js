@@ -26,9 +26,6 @@ const drawBarChart = (data, options, element) => {
   };
 
   const renderBar = (dataIndex) => {
-    let barHeight =
-      (data[dataIndex]["value"].reduce((a, b) => a + b, 0) / maxScale) *
-      maxHeight;
     let totalSubBars = data[dataIndex]["value"].length;
     let bar = "<div class='bar' id='bar" + dataIndex + "'></div>";
     let barLabel =
@@ -83,24 +80,6 @@ const drawBarChart = (data, options, element) => {
     }
 
     $(bar).append(barLabel).appendTo(chart);
-
-    // barData = bar
-    //   .find(".bar-data")
-    //   .css({ "font-size": Math.floor(titleSize * 0.6) });
-    // let dataPosition =
-    //   options.barDataPosition === "top"
-    //     ? Math.min(-barData.height(), barHeight - barData.height())
-    //     : options.barDataPosition === "middle"
-    //     ? Math.min(
-    //         barHeight / 2 - barData.height() / 2,
-    //         barHeight - barData.height()
-    //       )
-    //     : barHeight - barData.height();
-    // barData.css({
-    //   color: options.barLabelColor,
-    //   top: dataPosition,
-    //   left: barWidth / 2 - barData.width() / 2,
-    // });
 
     barLabel = bar
       .find(".bar-label")
