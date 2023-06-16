@@ -1,11 +1,4 @@
 const drawBarChart = (data, options, element) => {
-  let axisMargin = options.titleSize * 2;
-  let chart = element.css({
-    position: "relative",
-    height: options.height,
-    width: options.width,
-  });
-
   const calculateSubdivisionsOfScale = () => {
     let divisors = [6, 5, 4];
     let sumOfSubBarValues = getSumOfSubBarValues();
@@ -50,7 +43,7 @@ const drawBarChart = (data, options, element) => {
     let fontSize = options.titleSize;
     let verticalOffset = fontSize * 0.2;
 
-    let title = $("<div id='title'></div>")
+    let title = $("<div class='chart-title'></div>")
       .appendTo(chart)
       .text(options.title)
       .css({ "font-size": fontSize });
@@ -60,8 +53,6 @@ const drawBarChart = (data, options, element) => {
       left: options.width / 2 - title.width() / 2,
     });
   };
-
-  const renderBarData = (subBarElement) => {};
 
   const renderBar = (dataIndex) => {
     let xAxisLength = options.width - axisMargin;
@@ -110,30 +101,28 @@ const drawBarChart = (data, options, element) => {
             ? subBarHeight / 2 - subBarData.height() / 2
             : subBarHeight - subBarData.height();
         subBarData.css({
-          color: options.barLabelColor,
+          color: options.barDataLabelColor,
           top: dataPosition,
           left: barWidth / 2 - subBarData.width() / 2,
         });
       }
     }
 
-    $(bar)
-      .append(
-        "<div class='bar-label'>" + data[dataIndex]["barLabel"] + "</div>"
-      )
-      .appendTo(chart);
-
-    barLabel = bar
-      .find(".bar-label")
-      .css({ "font-size": Math.floor(options.titleSize * 0.6) });
-    barLabel.css({
+    let barLabel = data[dataIndex]["barLabel"] || "";
+    let labelElement = $("<div class='bar-label'></div>")
+      .text(barLabel)
+      .css({ "font-size": Math.floor(options.titleSize * 0.6) })
+      .appendTo(bar);
+    labelElement.css({
       top: options.height - axisMargin,
-      left: barWidth / 2 - barLabel.width() / 2,
+      left: barWidth / 2 - labelElement.width() / 2,
     });
+
+    bar.appendTo(chart);
   };
 
   const renderXAxis = () => {
-    let xAxis = $("<div id='x-axis'></div>")
+    let xAxis = $("<div class='x-axis'></div>")
       .appendTo(chart)
       .css({
         width: options.width - axisMargin,
@@ -145,7 +134,7 @@ const drawBarChart = (data, options, element) => {
 
   const renderXLabel = (axisElement) => {
     let fontSize = Math.floor(options.titleSize * 0.8);
-    let xLabel = $("<div id='x-label'></div>")
+    let xLabel = $("<div class='x-label'></div>")
       .appendTo(axisElement)
       .text(options.xLabel)
       .css({ "font-size": fontSize });
@@ -157,7 +146,7 @@ const drawBarChart = (data, options, element) => {
 
   const renderYAxis = () => {
     let yAxisLength = options.height - axisMargin * 2;
-    yAxis = $("<div id='y-axis'></div>").appendTo(chart).css({
+    yAxis = $("<div class='y-axis'></div>").appendTo(chart).css({
       height: yAxisLength,
       top: axisMargin,
       left: axisMargin,
@@ -170,7 +159,7 @@ const drawBarChart = (data, options, element) => {
   const renderYLabel = (axisElement) => {
     let fontSize = Math.floor(options.titleSize * 0.8);
     let yAxisLength = options.height - axisMargin * 2;
-    let yLabel = $("<div id='y-label'></div>")
+    let yLabel = $("<div class='y-label'></div>")
       .appendTo(axisElement)
       .text(options.yLabel)
       .css({ "font-size": fontSize });
@@ -211,6 +200,13 @@ const drawBarChart = (data, options, element) => {
       }
     }
   };
+
+  let axisMargin = options.titleSize * 2;
+  let chart = element.css({
+    position: "relative",
+    height: options.height,
+    width: options.width,
+  });
 
   renderXAxis();
   renderYAxis();

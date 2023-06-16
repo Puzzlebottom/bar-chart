@@ -10,10 +10,14 @@
   <script src="main.js"></script>
 </head>
 <body>
-  <div id="bar-chart-1"></div>
-  <div id="bar-chart-2"></div>
-  <div id="bar-chart-3"></div>
-  <div id="bar-chart-4"></div>
+  <div style="display: flex">
+  <div style="margin: 0 40px 20px 40px" id="bar-chart-1"></div>
+  <div style="margin: 0 40px 20px 40px; top: 163px; left: 203px;" id="bar-chart-2"></div>
+  </div>
+  <div style="display: flex">
+  <div style="margin: 0 40px 20px 40px" id="bar-chart-3"></div>
+  <div style="margin: 0 40px 20px 40px" id="bar-chart-4"></div>
+  </div>
   <script>
     let data = [
     {
@@ -38,13 +42,13 @@
     },
   ];
   let options = {
-    width: 400,
-    height: 400,
+    width: 450,
+    height: 350,
     title: "Zoo Animals",
     titleSize: 30,
     titleColor: "black",
     barDataPosition: "above",
-    barLabelColor: "black",
+    barDataLabelColor: "black",
     barSpacing: 20,
     xLabel: "Types of Animals",
     yLabel: "Animal Population",
@@ -52,7 +56,74 @@
   };
   let element = $("#bar-chart-1");
   drawBarChart(data, options, element);
+  </script>
+  <script>
   let data2 = [
+    {
+      value: [6],
+      barColor: ["teal"],
+      barLabel: "Gorillas",
+    },
+    {
+      value: [2],
+      barColor: ["teal"],
+      barLabel: "Giraffes",
+    },
+    {
+      value: [7],
+      barColor: ["Teal"],
+      barLabel: "Rhinos",
+    },
+    {
+      value: [1],
+      barColor: ["teal"],
+      barLabel: "Lions",
+    },
+  ];
+  let options2 = {
+    width: 45,
+    height: 35,
+    title: "Zoo Animals",
+    titleSize: 3,
+    titleColor: "black",
+    barDataPosition: "above",
+    barDataLabelColor: "black",
+    barSpacing: 2,
+    xLabel: "Types of Animals",
+    yLabel: "Animal Population",
+    maxScale: null,
+  };
+  let element2 = $("#bar-chart-2");
+  drawBarChart(data2, options2, element2);
+</script>
+</div>
+<script>
+  let data3 = [
+    {
+      value: [402],
+      barColor: ["blue"],
+      barLabel: "Less",
+    },
+    {
+      value: [3517],
+      barColor: ["red"],
+      barLabel: "More",
+    },
+  ];
+  let options3 = {
+    width: 450,
+    height: 350,
+    titleSize: 30,
+    titleColor: "black",
+    barDataLabelColor: "black",
+    barSpacing: 50,
+    maxScale: 5000,
+  };
+  let element3 = $("#bar-chart-3");
+  drawBarChart(data3, options3, element3);
+</script>
+<script>
+  let data4 = [
     {
       value: [6, 9, 10, 4],
       barColor: ["#00f", "#44f", "#88f", "#ccf"],
@@ -79,78 +150,17 @@
       barLabel: "Beans",
     },
   ];
-  let options2 = {
-    width: 300,
-    height: 300,
+  let options4 = {
+    width: 450,
+    height: 350,
     title: "Vegetables Bought",
-    titleSize: 20,
-    titleColor: "black",
-    barDataPosition: "middle", // above, top, middle, bottom
-    barLabelColor: "black",
-    barSpacing: 10,
-    xLabel: "Types of Vegetables",
-    yLabel: "Weight of Vegetables (in kg)",
-    maxScale: null,
-  };
-  let element2 = $("#bar-chart-2");
-  drawBarChart(data2, options2, element2);
-  let data3 = [
-    {
-      value: [402],
-      barColor: ["blue"],
-      barLabel: "Less",
-    },
-    {
-      value: [3517],
-      barColor: ["red"],
-      barLabel: "More",
-    },
-  ];
-  let options3 = {
-    width: 400,
-    height: 400,
-    title: "Numbers of Things",
     titleSize: 30,
     titleColor: "black",
-    barLabelColor: "black",
-    barSpacing: 50,
-    maxScale: 5000,
-  };
-  let element3 = $("#bar-chart-3");
-  drawBarChart(data3, options3, element3);
-  let data4 = [
-    {
-      value: [6],
-      barColor: ["teal"],
-      barLabel: "Gorillas",
-    },
-    {
-      value: [2],
-      barColor: ["teal"],
-      barLabel: "Giraffes",
-    },
-    {
-      value: [7],
-      barColor: ["Teal"],
-      barLabel: "Rhinos",
-    },
-    {
-      value: [1],
-      barColor: ["teal"],
-      barLabel: "Lions",
-    },
-  ];
-  let options4 = {
-    width: 40,
-    height: 40,
-    title: "Zoo Animals",
-    titleSize: 3,
-    titleColor: "black",
-    barDataPosition: "above",
-    barLabelColor: "black",
-    barSpacing: 2,
-    xLabel: "Types of Animals",
-    yLabel: "Animal Population",
+    barDataPosition: "middle",
+    barDataLabelColor: "black",
+    barSpacing: 15,
+    xLabel: "Types of Vegetables",
+    yLabel: "Weight of Vegetables (in kg)",
     maxScale: null,
   };
   let element4 = $("#bar-chart-4");

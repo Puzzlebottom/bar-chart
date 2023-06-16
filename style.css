@@ -47,28 +47,28 @@ table {
 	border-spacing: 0;
 }
 
-#bar-chart {
+.bar-chart {
   position: relative;
 }
 
-#x-axis {
+.x-axis {
   position: absolute;
   height: 1px;
   background-color: black;
 }
 
-#y-axis {
+.y-axis {
   position: absolute;
   width: 1px;
   background-color: black;
 }
 
-#title, #x-label, .bar-data, .bar-label, .scale-mark  {
+.chart-title, .x-label, .bar-data, .bar-label, .scale-mark  {
   position: absolute;
   width: fit-content;
 }
 
-#y-label {
+.y-label {
   position: absolute;
   transform-origin: top left;
   transform: rotate(-90deg);
