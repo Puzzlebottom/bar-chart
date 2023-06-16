@@ -72,7 +72,7 @@ table {
   position: absolute;
   transform-origin: top left;
   transform: rotate(-90deg);
-  width: fit-content;
+  width: max-content;
 }
 
 .bar, .sub-bar {
